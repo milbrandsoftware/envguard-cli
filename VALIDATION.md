@@ -13,12 +13,12 @@ The repository is initialized locally on branch `main`. Source publication targe
 | Check | Result | Evidence |
 | --- | --- | --- |
 | Strict TypeScript check | PASS | `npm run check` |
-| Windows / Node.js 24.21.0 | PASS | 64 tests, 0 failures |
-| Windows / Node.js 22.23.3 | PASS | Same 64 tests, 0 failures, executed with a temporary npm-provided Node.js binary |
+| Windows / Node.js 24.21.0 | PASS | 96 tests, 0 failures, including the opt-in AI integration |
+| Windows / Node.js 22.23.3 | PASS | Same 96 tests, 0 failures, executed with a temporary npm-provided Node.js binary |
 | Concrete synthetic integration scenarios | PASS | 11/11 scenarios on Windows with Node.js 22 and 24; actual CLI processes, expected diagnostics/exit codes, no value disclosure, unchanged input hashes |
-| Coverage on Node.js 24 | PASS | Compiled source: 100% lines, 98.48% branches, 100% functions, Node built-in coverage |
+| Coverage on Node.js 24 | PASS | Compiled source: 97.59% lines, 94.92% branches, 100% functions, Node built-in coverage |
 | npm package installation | PASS | Actual tarball installed offline into a temporary project; installed bin invoked through `npm exec --offline` |
-| npm publish contents | PASS | Explicit allowlist; 10 files after adding scenario documentation; no env files, node_modules, tests, or local artifacts |
+| npm publish contents | PASS | Explicit allowlist; 12 files after adding AI source and documentation; no env files, node_modules, tests, or local artifacts |
 | Dependency audit | PASS | `npm audit` and `npm audit --omit=dev`: 0 known vulnerabilities at check time |
 | Runtime dependencies | PASS | None; TypeScript and Node.js types are development-only |
 | Valid documented fixture | PASS | Strict check exits 0 |
@@ -26,10 +26,12 @@ The repository is initialized locally on branch `main`. Source publication targe
 | Exit codes and errors | PASS | Validation 1, usage/read/encoding errors 2, clean validation 0 |
 | Value redaction | PASS | Synthetic sentinel absent from both text and JSON reports, including syntax and duplicate diagnostics |
 | Read-only behavior | PASS | Fixture content unchanged; process environment unchanged; shell-like input treated literally |
-| Remote GitHub Actions | NOT RUN | Windows/Linux, Node.js 22/24 matrix is prepared; requires an approved public push |
-| Linux execution | NOT RUN | Covered by the prepared CI matrix, not claimed as locally tested |
+| Remote GitHub Actions | PENDING | Initial public workflow run: 39622462940; three jobs reported success, ubuntu/22 still reported in progress. The AI extension requires its own completed public CI run. |
+| Linux execution | PARTIAL | Initial ubuntu/24 CI job reported success; no local Linux run or full AI CI result is claimed. |
+| OpenAI provider tests | PASS (MOCKED) | Outbound allowlist, names/value/path exclusion, safe errors, output schema validation, terminal-control removal, and child-process CLI checks |
+| Live OpenAI API | NOT RUN | No paid call made; requires an approved budget, process-level API key and available model |
 
-Coverage is a test metric, not proof of absence of defects. Runtime values are read into memory, but never retained in parsed metadata or rendered diagnostics. Variable names and line numbers are intentionally reported.
+Coverage is a test metric, not proof of absence of defects. Runtime values are read into memory, but never retained in parsed metadata or rendered diagnostics. Variable names and line numbers are intentionally reported locally. The optional AI boundary sends only allowlisted diagnostic categories; names and values are excluded. It does not check password strength or scan dependencies for vulnerabilities.
 
 ## Identity and registry checks
 
@@ -45,6 +47,7 @@ Coverage is a test metric, not proof of absence of defects. Runtime values are r
 
 - `src/check.ts`: pure parser, comparison, structured report, text formatter.
 - `src/cli.ts`: local file reading, strict arguments, JSON/text output, safe operational errors.
+- `src/ai.ts` and `docs/AI.md`: opt-in OpenAI explanations, enum-only project-derived disclosure, offline preview, bounded call, no retries, and explicit live-test limitations.
 - `test/`: parser, comparison, CLI, redaction, encoding, and exit-code regression tests.
 - `scripts/smoke-package.mjs`: actual package installation and executable smoke test.
 - `scripts/verify-scenarios.mjs` and `docs/SCENARIOS.md`: eleven concrete developer workflows, explicitly labelled synthetic integration tests rather than customer activity.

@@ -2,7 +2,7 @@
 
 Check your `.env` against `.env.example` before a missing variable breaks your application.
 
-EnvGuard reports missing variables, extra variables, duplicates, empty values, and syntax errors. It runs locally, never evaluates your environment files, and never includes their values in its reports. No runtime dependencies, server, database, API, or telemetry.
+EnvGuard reports missing variables, extra variables, duplicates, empty values, and syntax errors. Checks run locally, never evaluate your environment files, and never include their values in reports. No runtime dependencies, server, database, or telemetry. Optional OpenAI explanations send only diagnostic categories, never environment names or values.
 
 **Release status:** v0.1.0 is a release candidate. Source code is hosted at [milbrandsoftware/envguard-cli](https://github.com/milbrandsoftware/envguard-cli). The npm package has not been published. The `npx` commands below become available after the first npm release.
 
@@ -94,7 +94,19 @@ EnvGuard uses a small, explicit dotenv dialect, informed by the [Node.js dotenv 
 
 Reports contain validated variable **names**, file roles (`env` / `example`), line numbers, and fixed explanatory messages. They never contain values, raw input lines, user-supplied paths, or raw exception messages. Variable names themselves can be sensitive; decide whether your CI logs should be public. Keep secrets in values, not variable names.
 
-The CLI has no network code and no telemetry. Installing packages with npm or `npx` can contact the npm registry; that is separate from running EnvGuard. Original values necessarily exist in process memory while their files are read. The tool is read-only.
+The `check` command never makes a network request. The optional `explain --ai` command contacts OpenAI only when explicitly requested; its project-derived payload is rebuilt from diagnostic enum codes, excluding names and values. Preview it first with `explain --preview`. Installing packages with npm or `npx` can contact the npm registry. Original values necessarily exist in process memory while their files are read. The tool is read-only.
+
+## Optional AI explanations
+
+```sh
+node dist/cli.js explain --preview --json
+# Only with a configured OPENAI_API_KEY and an explicitly approved API budget:
+node dist/cli.js explain --ai --model YOUR_MODEL --json
+```
+
+`YOUR_MODEL` must be replaced with an available OpenAI model supporting Structured Outputs. No model is selected automatically. The integration makes at most one request, with a 15-second timeout, 800 output-token limit, and no retries. Advice never changes validation results or edits a file. The provider integration is tested with mocks; a live API test has not yet been performed. See the [complete disclosure contract and billing limits](docs/AI.md).
+
+EnvGuard does not scan dependencies for vulnerabilities, check breached passwords, validate credential strength, or certify an application's security.
 
 ## Development
 

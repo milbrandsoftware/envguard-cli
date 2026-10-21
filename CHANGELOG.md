@@ -13,6 +13,7 @@ All notable changes are documented here. Versions follow Semantic Versioning.
 - UTF-8, BOM, line-ending, quoted-value, comment, and multiline support.
 - Secret-redaction regression tests and offline package installation smoke test.
 - Eleven reproducible synthetic integration scenarios for concrete developer workflows.
+- Opt-in OpenAI diagnostic explanations with a preview of the enum-only disclosure, bounded requests, safe provider errors, and mocked end-to-end tests.
 - Windows/Linux CI configuration for Node.js 22 and 24.
 - MIT license, contribution guide, security policy, examples, and manual release instructions.
 
