@@ -26,12 +26,14 @@ The repository is initialized locally on branch `main`. Source publication targe
 | Exit codes and errors | PASS | Validation 1, usage/read/encoding errors 2, clean validation 0 |
 | Value redaction | PASS | Synthetic sentinel absent from both text and JSON reports, including syntax and duplicate diagnostics |
 | Read-only behavior | PASS | Fixture content unchanged; process environment unchanged; shell-like input treated literally |
-| Remote GitHub Actions | PENDING | Initial public workflow run: 39622462940; three jobs reported success, ubuntu/22 still reported in progress. The AI extension requires its own completed public CI run. |
-| Linux execution | PARTIAL | Initial ubuntu/24 CI job reported success; no local Linux run or full AI CI result is claimed. |
+| Remote GitHub Actions | PASS | AI extension: run 39624226618, tested commit 08f9291e7a122f7f17f8de7a5273b5f96eb14003; all four Windows/Linux, Node.js 22/24 jobs completed successfully |
+| Linux execution | PASS (CI) | Both ubuntu/22 and ubuntu/24 jobs passed type checking, all tests, usage scenarios, and package installation |
 | OpenAI provider tests | PASS (MOCKED) | Outbound allowlist, names/value/path exclusion, safe errors, output schema validation, terminal-control removal, and child-process CLI checks |
 | Live OpenAI API | NOT RUN | No paid call made; requires an approved budget, process-level API key and available model |
 
 Coverage is a test metric, not proof of absence of defects. Runtime values are read into memory, but never retained in parsed metadata or rendered diagnostics. Variable names and line numbers are intentionally reported locally. The optional AI boundary sends only allowlisted diagnostic categories; names and values are excluded. It does not check password strength or scan dependencies for vulnerabilities.
+
+Public evidence: [completed CI run](https://github.com/milbrandsoftware/envguard-cli/actions/runs/39624226618), [tested source commit](https://github.com/milbrandsoftware/envguard-cli/commit/08f9291e7a122f7f17f8de7a5273b5f96eb14003). This report records that specific source revision; subsequent documentation-only updates do not represent additional test runs.
 
 ## Identity and registry checks
 
