@@ -113,3 +113,50 @@ test('all diagnostics redact values in both modes, including syntax failures', t
     assert.ok(!(result.stdout + result.stderr).includes('SECRET_SENTINEL'));
   }
 });
+
+test('AI preview works without credentials and exposes only categories', t => {
+  const cwd = fixture(t, 'CONFIDENTIAL_TOKEN=SECRET_SENTINEL\nEMPTY=', 'CONFIDENTIAL_TOKEN=\nEMPTY=\nMISSING=');
+  const result = run(cwd, ['explain', '--preview', '--json']);
+  const report = JSON.parse(result.stdout);
+  assert.equal(result.status, 1);
+  assert.deepEqual(report.ai.disclosure, { schemaVersion: 1, codes: ['EMPTY', 'MISSING'] });
+  assert.equal(report.ai.status, 'preview');
+  assert.ok(!JSON.stringify(report.ai).includes('CONFIDENTIAL'));
+  assert.ok(!result.stdout.includes('SECRET_SENTINEL'));
+});
+
+for (const args of [['check', '--ai'], ['check', '--preview'], ['check', '--model', 'test-model'],
+  ['explain'], ['explain', '--ai'], ['explain', '--ai', '--preview']]) {
+  test(`rejects ambiguous AI usage: ${args.join(' ')}`, t => {
+    assert.equal(run(fixture(t), [...args, '--json']).status, 2);
+  });
+}
+
+test('AI CLI end-to-end uses a mocked provider and preserves validation failure', t => {
+  const cwd = fixture(t, 'CONFIDENTIAL_TOKEN=SECRET_SENTINEL\nEMPTY=', 'CONFIDENTIAL_TOKEN=\nEMPTY=');
+  const capture = join(cwd, 'request.json');
+  const preload = new URL('./fixtures/mock-openai.mjs', import.meta.url).href;
+  const result = spawnSync(process.execPath, ['--import', preload, cli, 'explain', '--ai', '--model', 'synthetic-model', '--json'], {
+    cwd, encoding: 'utf8', timeout: 10_000,
+    env: { ...process.env, OPENAI_API_KEY: 'SYNTHETIC_API_KEY', ENVGUARD_TEST_CAPTURE: capture },
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.equal(JSON.parse(result.stdout).ai.status, 'completed');
+  const payload = readFileSync(capture, 'utf8');
+  for (const privateText of ['CONFIDENTIAL_TOKEN', 'SECRET_SENTINEL', cwd, 'SYNTHETIC_API_KEY']) {
+    assert.ok(!payload.includes(privateText));
+  }
+});
+
+test('AI CLI provider failure is sanitized', t => {
+  const cwd = fixture(t, 'KEY=', 'KEY=');
+  const preload = new URL('./fixtures/mock-openai.mjs', import.meta.url).href;
+  const result = spawnSync(process.execPath, ['--import', preload, cli, 'explain', '--ai', '--model', 'synthetic-model', '--json'], {
+    cwd, encoding: 'utf8', timeout: 10_000,
+    env: { ...process.env, OPENAI_API_KEY: 'SYNTHETIC_API_KEY', ENVGUARD_TEST_PROVIDER_ERROR: '1' },
+  });
+  assert.equal(result.status, 2);
+  assert.equal(JSON.parse(result.stdout).error.code, 'AI_AUTH');
+  assert.ok(!result.stdout.includes('SYNTHETIC'));
+});
