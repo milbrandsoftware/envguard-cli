@@ -104,11 +104,14 @@ npm run check
 npm test
 npm run test:coverage
 npm run test:package
+npm run test:scenarios
 ```
 
 Tests use Node's built-in test runner and synthetic credentials. The package smoke test packs the actual release, installs it offline into a temporary project, and runs the installed executable. GitHub Actions is configured for Windows and Linux on Node.js 22 and 24; remote CI results are only available once the repository is pushed.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md), and the [manual release procedure](docs/RELEASING.md).
+
+See [reproducible usage scenarios](docs/SCENARIOS.md) for eleven concrete, synthetic integration tests covering deployment mistakes, CI secrets, merge duplication, multiline values, and strict gates. These tests do not represent customer activity or adoption.
 
 ## License
 

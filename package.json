@@ -22,6 +22,7 @@
     "test": "npm run build && node --test test/*.test.mjs",
     "test:coverage": "npm run build && node --experimental-test-coverage --test test/*.test.mjs",
     "test:package": "npm run build && node scripts/smoke-package.mjs",
+    "test:scenarios": "npm run build && node scripts/verify-scenarios.mjs",
     "check": "tsc --noEmit -p tsconfig.json",
     "prepack": "npm run build"
   },

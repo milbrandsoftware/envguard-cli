@@ -15,9 +15,10 @@ The repository is initialized locally on branch `main`. Source publication targe
 | Strict TypeScript check | PASS | `npm run check` |
 | Windows / Node.js 24.21.0 | PASS | 64 tests, 0 failures |
 | Windows / Node.js 22.23.3 | PASS | Same 64 tests, 0 failures, executed with a temporary npm-provided Node.js binary |
+| Concrete synthetic integration scenarios | PASS | 11/11 scenarios on Windows with Node.js 22 and 24; actual CLI processes, expected diagnostics/exit codes, no value disclosure, unchanged input hashes |
 | Coverage on Node.js 24 | PASS | Compiled source: 100% lines, 98.48% branches, 100% functions, Node built-in coverage |
 | npm package installation | PASS | Actual tarball installed offline into a temporary project; installed bin invoked through `npm exec --offline` |
-| npm publish contents | PASS | Explicit allowlist; 9 files before final pack; no env files, node_modules, tests, or local artifacts |
+| npm publish contents | PASS | Explicit allowlist; 10 files after adding scenario documentation; no env files, node_modules, tests, or local artifacts |
 | Dependency audit | PASS | `npm audit` and `npm audit --omit=dev`: 0 known vulnerabilities at check time |
 | Runtime dependencies | PASS | None; TypeScript and Node.js types are development-only |
 | Valid documented fixture | PASS | Strict check exits 0 |
@@ -46,6 +47,7 @@ Coverage is a test metric, not proof of absence of defects. Runtime values are r
 - `src/cli.ts`: local file reading, strict arguments, JSON/text output, safe operational errors.
 - `test/`: parser, comparison, CLI, redaction, encoding, and exit-code regression tests.
 - `scripts/smoke-package.mjs`: actual package installation and executable smoke test.
+- `scripts/verify-scenarios.mjs` and `docs/SCENARIOS.md`: eleven concrete developer workflows, explicitly labelled synthetic integration tests rather than customer activity.
 - `.github/workflows/ci.yml`: read-only CI, pinned action revisions, no publishing job.
 - English README, MIT license, CONTRIBUTING, SECURITY, CHANGELOG, usage examples, and manual release procedure.
 - `artifacts/envguard-cli-0.1.0.tgz` and adjacent SHA-256 file: local release candidate, excluded from Git and npm package contents.
