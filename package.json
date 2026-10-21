@@ -1,0 +1,56 @@
+{
+  "name": "envguard-cli",
+  "version": "0.1.0",
+  "description": "Check .env files against .env.example without exposing secret values.",
+  "type": "module",
+  "bin": {
+    "envguard-cli": "dist/cli.js"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "docs/"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "test:coverage": "npm run build && node --experimental-test-coverage --test test/*.test.mjs",
+    "test:package": "npm run build && node scripts/smoke-package.mjs",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "prepack": "npm run build"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "MIILBRAND Nicolas"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milbrandsoftware/envguard-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/milbrandsoftware/envguard-cli/issues"
+  },
+  "homepage": "https://github.com/milbrandsoftware/envguard-cli#readme",
+  "keywords": [
+    "env",
+    "dotenv",
+    "cli",
+    "validation",
+    "ci",
+    "secrets"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "typescript": "7.0.2"
+  }
+}
